@@ -27,10 +27,13 @@ jobs:
       run: |
         python poisoning-data.py | tee poisoning_report.txt
 
-    - name: Post report using CML
-      uses: iterative/setup-cml@v2
-      env:
-        REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        report: poisoning_report.txt
+    - name: Setup CML
+        uses: iterative/setup-cml@v2
 
+      - name: Publish CML report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Data Poisoning Evaluation Report" > report.md
+          cat result.txt >> report.md
+          cml comment create report.md
