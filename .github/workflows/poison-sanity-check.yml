@@ -1,4 +1,4 @@
-name: CML Sanity Test
+name: CML Sanity Test Data Poisioning
 
 on:
   push:
