@@ -25,7 +25,7 @@ jobs:
 
     - name: Run Poisoning Analysis
       run: |
-        python poisoning-data.py | tee poisoning_report.txt
+        python poisoning-data.py > result.txt
 
     - name: Setup CML
       uses: iterative/setup-cml@v2
