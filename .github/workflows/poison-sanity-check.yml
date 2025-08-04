@@ -3,7 +3,7 @@ name: Sanity Test - Data Poisoning
 on:
   push:
     branches:
-      - week8
+      - test
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
         python poisoning-data.py | tee poisoning_report.txt
 
     - name: Post report using CML
-      uses: iterative/cml@v2
+      uses: iterative/setup-cml@v2
       env:
         REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
