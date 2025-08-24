@@ -1,36 +1,43 @@
-name: Sanity Test - Data Poisoning
+name: CML Sanity Test Data Poisoning
 
 on:
   push:
-    branches:
-      - week8
+    branches: test
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  poisoning-analysis:
+  train-and-report:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Run Poisoning Analysis
-      run: |
-        python poisoning-data.py | tee poisoning_report.txt
+      - name: Run poisoning analysis
+        run: |
+          python poisoning-data.py > result.txt
+          cat result.txt
 
-    - name: Post report using CML
-      uses: iterative/cml@v2
-      env:
-        REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        report: poisoning_report.txt
+      - name: Setup CML
+        uses: iterative/setup-cml@v2
+
+      - name: Publish CML report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Data Poisoning Evaluation Report" > report.md
+          cat result.txt >> report.md
+          cml comment create report.md
 
